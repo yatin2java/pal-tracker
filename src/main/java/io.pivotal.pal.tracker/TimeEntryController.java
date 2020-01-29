@@ -2,8 +2,7 @@ package io.pivotal.pal.tracker;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +19,8 @@ public class TimeEntryController {
     }
 
 
-    public ResponseEntity create(TimeEntry timeEntryToCreate) {
+    @PostMapping
+    public ResponseEntity create(@RequestBody TimeEntry timeEntryToCreate) {
 
         TimeEntry timeEntry = tER.create(timeEntryToCreate);
         ResponseEntity response = new ResponseEntity(timeEntry, HttpStatus.CREATED);
@@ -28,6 +28,7 @@ public class TimeEntryController {
     }
 
 
+    @GetMapping
     public ResponseEntity<List<TimeEntry>> list() {
         List<TimeEntry> timeEntry = tER.list();
         ResponseEntity response = new ResponseEntity(timeEntry, HttpStatus.OK);
@@ -35,8 +36,9 @@ public class TimeEntryController {
     }
 
 
-    public ResponseEntity<TimeEntry> read(long nonExistentTimeEntryId) {
-        TimeEntry timeEntry = tER.find(nonExistentTimeEntryId);
+    @GetMapping("{id}")
+    public ResponseEntity<TimeEntry> read(@PathVariable Long id) {
+        TimeEntry timeEntry = tER.find(id);
         ResponseEntity response;
 
         if(timeEntry == null){
@@ -49,8 +51,9 @@ public class TimeEntryController {
     }
 
 
-    public ResponseEntity update(long timeEntryId, TimeEntry expected) {
-        TimeEntry timeEntry = tER.update(timeEntryId, expected);
+    @PutMapping("{id}")
+    public ResponseEntity update(@PathVariable long id, @RequestBody TimeEntry expected) {
+        TimeEntry timeEntry = tER.update(id, expected);
         ResponseEntity response;
 
         if(timeEntry == null){
@@ -62,9 +65,9 @@ public class TimeEntryController {
         }
     }
 
-
-    public ResponseEntity delete(long timeEntryId) {
-        tER.delete(timeEntryId);
+    @DeleteMapping("{id}")
+    public ResponseEntity delete(@PathVariable long id) {
+        tER.delete(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
